@@ -19,13 +19,14 @@ export default defineConfig({
       },
       extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
+  base: "/pdfjs-annotation/",
   server: {
     host: '0.0.0.0',
     port: 5173
   },
   optimizeDeps: {
     esbuildOptions: {
-        target: 'esnext'
+      target: 'esnext'
     }
   },
   build: {
