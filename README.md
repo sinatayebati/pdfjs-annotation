@@ -264,34 +264,6 @@ const deleteExistingAnnotations = async (viewerApp, pdfFactory) => {
 </script>
 ```
 
-### Styling
-
-```css
-<style>
-.button-container {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 10px;
-  width: 100%;
-  padding: 10px;
-  background-color: #F5F5F5;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-  height: 100%;
-}
-
-.button-row {
-  margin-bottom: 5px;
-}
-
-.v-btn {
-  height: 50px;
-  font-size: 16px;
-}
-</style>
-```
-
 By integrating `pdfAnnotate`, you can easily add programmatic annotations to your PDF documents. This library supports various annotation types, making it flexible and powerful for different use cases.
 
 ---
