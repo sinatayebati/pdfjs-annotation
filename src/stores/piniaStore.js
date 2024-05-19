@@ -1,13 +1,13 @@
-// @ts-nocheck
+// stores/pdfStore.js
 import { defineStore } from 'pinia';
 
-export const piniaStore = defineStore("store", {
-    state: () => {
-        return {
-
-        }
+export const piniaStore = defineStore('pdfStore', {
+  state: () => ({
+    pdfUrl: '/pdfjs-annotation/pdfjs-4.2.67-dist/web/compressed.tracemonkey-pldi-09.pdf',
+  }),
+  actions: {
+    setPdfUrl(url) {
+      this.pdfUrl = url;
     },
-    actions: {
-
-    },
-})
+  },
+});
