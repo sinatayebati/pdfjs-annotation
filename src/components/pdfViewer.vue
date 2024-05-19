@@ -1,6 +1,6 @@
 <template>
   <div>
-    <iframe ref="pdfViewerIframe" id="pdfViewer" :src="viewerUrl" style="width: 100%; height: 120vh;"></iframe>
+    <iframe ref="pdfViewerIframe" id="pdfViewer" :src="viewerUrl" style="width: 100%; height: 100vh;"></iframe>
   </div>
 </template>
 
@@ -14,6 +14,13 @@ const viewerUrl = ref('/pdfjs-annotation/pdfjs-4.2.67-dist/web/viewer.html');
 
 const pdfStore = piniaStore();
 const { pdfUrl } = storeToRefs(pdfStore);
+
+const pdfPageDimensions = ref([]);
+
+// Call the function to load the PDF when the component is mounted
+onMounted(() => {
+  loadPdf();
+});
 
 // Function to load the PDF file as Uint8Array
 async function fetchPdfAsUint8Array(pdfPath) {
@@ -30,14 +37,26 @@ function iframeLoader(pdfData) {
   pdfViewerIframeElement.onload = () => {
     const viewerApp = pdfViewerIframeElement.contentWindow.PDFViewerApplication;
     if (viewerApp && viewerApp.initialized) {
-      viewerApp.open({ data: pdfData }); // Pass pdfData as an object
+      viewerApp.open({ data: pdfData }).then(() => {
+        getPdfPageDimensions(viewerApp.pdfDocument);
+      });
     } else {
       console.error("Viewer is not ready or document not available");
     }
   };
-
-  // Trigger the iframe load
   pdfViewerIframeElement.src = viewerUrl.value;
+}
+
+async function getPdfPageDimensions(pdfDocument) {
+  const numPages = pdfDocument.numPages;
+  const dimensions = [];
+  for (let i = 1; i <= numPages; i++) {
+    const page = await pdfDocument.getPage(i);
+    const viewport = page.getViewport({ scale: 1 });
+    dimensions.push({ width: viewport.width, height: viewport.height });
+  }
+  pdfPageDimensions.value = dimensions;
+  console.log('Page Dimensions:', pdfPageDimensions.value);
 }
 
 // Function to load the PDF when the component is mounted
@@ -50,8 +69,4 @@ async function loadPdf() {
   }
 }
 
-// Call the function to load the PDF when the component is mounted
-onMounted(() => {
-  loadPdf();
-});
 </script>
