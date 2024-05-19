@@ -942,7 +942,7 @@
   flex-shrink:0;
 }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) .toggle-button{
     --button-background-color:color-mix(in srgb, currentColor 7%, transparent);
@@ -1310,7 +1310,7 @@
     box-shadow:var(--editor-toolbar-shadow);
   }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) :is(.annotationEditorLayer
   :is(.freeTextEditor, .inkEditor, .stampEditor, .highlightEditor),.textLayer) .editToolbar{
@@ -1552,7 +1552,7 @@
             pointer-events:none;
           }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) :is(.annotationEditorLayer
   :is(.freeTextEditor, .inkEditor, .stampEditor, .highlightEditor),.textLayer) .editToolbar .buttons .altText .tooltip.show{
@@ -1982,7 +1982,7 @@
   box-shadow:var(--dialog-shadow);
 }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) #altTextDialog{
     --dialog-bg-color:#1c1b22;
@@ -2239,7 +2239,7 @@
   --swatch-border-color:#cfcfd8;
 }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) .colorPicker{
     --hover-outline-color:#80ebff;
@@ -2498,7 +2498,7 @@
       --example-color:#bfbfc9;
     }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) #highlightParamsToolbarContainer #editorHighlightThickness .thicknessPicker{
         --example-color:#80808e;
@@ -2556,7 +2556,7 @@
       background-color:var(--divider-color);
     }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
 
 :where(html:not(.is-light)) #highlightParamsToolbarContainer #editorHighlightVisibility .divider{
         --divider-color:#8f8f9d;
@@ -2865,7 +2865,7 @@
   --inline-end:left;
 }
 
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
   :root:where(:not(.is-light)){
     --main-color:rgb(249 249 250);
     --body-bg-color:rgb(42 42 46);
