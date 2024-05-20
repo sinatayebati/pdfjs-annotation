@@ -24,8 +24,17 @@ jobs:
     - name: Build project
       run: npm run build
 
+    - name: Build Docker image
+      run: docker build -t vue-pdf-annotate .
+
+    - name: Deploy Docker container to GitHub Pages
+      run: |
+        docker run -d -p 5173:5173 pdf-annotate
+        docker cp $(docker ps -ql):/app/dist ./dist
+        docker stop $(docker ps -ql)
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        personal_token: ${{ secrets.GH_TOKEN }}
+        github_token: ${{ secrets.GH_TOKEN }}
         publish_dir: ./dist

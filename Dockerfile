@@ -16,11 +16,8 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Install a lightweight HTTP server
-RUN npm install -g serve
-
 # Expose the port the app runs on
 EXPOSE 5173
 
 # Command to run the app
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["npm", "run", "dev"]
