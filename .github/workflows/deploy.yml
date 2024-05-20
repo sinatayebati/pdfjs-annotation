@@ -29,7 +29,7 @@ jobs:
 
     - name: Deploy Docker container to GitHub Pages
       run: |
-        docker run -d -p 5173:5173 pdf-annotate
+        docker run -d -p 5173:5173 vuetify-project
         docker cp $(docker ps -ql):/app/dist ./dist
         docker stop $(docker ps -ql)
 
