@@ -4624,7 +4624,7 @@ const defaultOptions = {
 };
 {
   defaultOptions.defaultUrl = {
-    value: "",
+    value: "./pdfjs-4.2.67-dist/web/compressed.tracemonkey-pldi-09.pdf",
     kind: OptionKind.VIEWER
   };
   defaultOptions.sandboxBundleSrc = {

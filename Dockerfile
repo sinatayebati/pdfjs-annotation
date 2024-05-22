@@ -1,5 +1,5 @@
-# Use a Node.js base image
-FROM node:18
+# Stage 1: Build the application
+FROM node:18 as build
 
 # Set the working directory
 WORKDIR /app
@@ -16,8 +16,17 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 5173
+# Stage 2: Serve the application with Nginx
+FROM nginx:alpine
 
-# Command to run the app
-CMD ["npm", "run", "dev"]
+# Copy the build output to the Nginx html directory
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy the Nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose the port
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

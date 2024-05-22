@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 
 export const piniaStore = defineStore('pdfStore', {
   state: () => ({
+    viewerUrl: '/pdfjs-annotation/pdfjs-4.2.67-dist/web/viewer.html',
     pdfUrl: '/pdfjs-annotation/pdfjs-4.2.67-dist/web/compressed.tracemonkey-pldi-09.pdf',
     isHightlightAnnotationActive: false,
   }),

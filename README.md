@@ -4,6 +4,12 @@ Welcome to the PDF Annotator project! This project is built using Vue.js, PDF.js
 
 As someone who found the documentation of PDF.js insufficient and faced significant challenges in programmatically adding annotations to PDF documents using a dedicated backend and database, I decided to create this project. Working with the annotation layer of PDF.js was very challenging and almost impossible to accomplish this task. Therefore, I created this small project to showcase the easiest production-level solution ([pdfAnnotate](https://github.com/highkite/pdfAnnotate)) I found for programmatic annotation and demonstrate how you can easily integrate the prebuilt PDF.js viewer into your Vue project.
 
+<p align="center">
+    <img src="src/assets/highlight.png"
+    width = 600px
+    >
+</p>
+
 ### Table of Contents
 
 1. [Getting Started](#getting-started)
@@ -66,65 +72,31 @@ The `pdfViewer.vue` component integrates the default/prebuilt PDF.js viewer usin
 
 Here's how simple integration with iframe works:
 
-1. **Vue Template Structure**
+1. **Integration of PDFjs in Vue component via `iframe`**
    ```html
    <template>
      <div>
-       <iframe ref="pdfViewerIframe" id="pdfViewer" :src="viewerUrl" style="width: 100%; height: 100vh;"></iframe>
+       <iframe ref="pdfViewerIframe" id="pdfViewer" :src="viewerUrl"></iframe>
      </div>
    </template>
    ```
 
-2. **Vue Script Setup**
-   ```javascript
-   <script setup>
-   import { ref, onMounted } from 'vue';
-   import { piniaStore } from '../stores/piniaStore';
-   import { storeToRefs } from 'pinia';
+2. **Break Down the Key Aspects**
 
-   const pdfViewerIframe = ref(null);
-   const viewerUrl = ref('/pdfjs-annotation/pdfjs-4.2.67-dist/web/viewer.html');
+- **Iframe Source**: set the iframe's `src` to the path of the PDF.js viewer HTML file.
+- **Iframe ID**: assigned the iframe an ID of `pdfViewer` for easy interaction with its content.
+- **PDF Loading**: `loadPDF` and `iframeLoader` functions handle fetching and preparing the PDF, which is then loaded into the iframe.
+- **Below are the major API calls to pdfjs and their functions**:
+    - **`PDFViewerApplication`**: This is the main class in viewer.mjs that we interact with, controlling rendering and sub-functionalities.
+        - `PDFViewerApplication.open(file)`: Used to load the PDF. Pass a Uint8Array instead of a URL.
+        - Ensure to decode base64 encoded data before passing it -- not all browsers support atob or data URI schemes.
+    - **`value.contentWindow.PDFViewerApplication`**: Accesses the DOM content.
+    - **`PDFViewerApplication.pdfDocument`**: Initializes interaction with the DOM content.
+    - **`PDFViewerApplication.pdfDocument.getData()`**: Retrieves data from the DOM for operations like client-side annotation and rendering.
+    - **`PDFViewerApplication.initialized`**: Checks if the viewer is initialized and ready for rendering.
+    - **`PDFViewerApplication.eventBus`**: Enables the event bus of pdfjs.
+    - **`PDFViewerApplication.eventBus.on("pagechanging")`**: Listens for page changes in the PDF
 
-   const pdfStore = piniaStore();
-   const { pdfUrl } = storeToRefs(pdfStore);
-
-   const loadPdf = async () => {
-     if (pdfUrl.value) {
-       const pdfData = await fetchPdfAsUint8Array(pdfUrl.value);
-       iframeLoader(pdfData);
-     } else {
-       console.error("No PDF available");
-     }
-   };
-
-   onMounted(() => {
-     loadPdf();
-   });
-
-   async function fetchPdfAsUint8Array(pdfPath) {
-     const response = await fetch(pdfPath);
-     const arrayBuffer = await response.arrayBuffer();
-     return new Uint8Array(arrayBuffer);
-   }
-
-   function iframeLoader(pdfData) {
-     const pdfViewerIframeElement = pdfViewerIframe.value;
-     if (!pdfViewerIframeElement) return;
-
-     pdfViewerIframeElement.onload = () => {
-       const viewerApp = pdfViewerIframeElement.contentWindow.PDFViewerApplication;
-       if (viewerApp && viewerApp.initialized) {
-         viewerApp.open({ data: pdfData });
-       } else {
-         console.error("Viewer is not ready or document not available");
-       }
-     };
-     pdfViewerIframeElement.src = viewerUrl.value;
-   }
-   </script>
-   ```
-
-The PDF.js viewer is seamlessly integrated into the Vue component using an `iframe`, making it easy to load and display PDF documents.
 
 ## Annotating PDFs with pdfAnnotate
 
@@ -138,11 +110,41 @@ Here's how you can use it:
 
 The `pdfAnnotate` library supports several types of annotations, including:
 - Highlight
+<p align="center">
+    <img src="src/assets/higlight2.png"
+    width = 300px
+    >
+</p>
 - Squiggly
+<p align="center">
+    <img src="src/assets/squiggly.png"
+    width = 300px
+    >
+</p>
 - Underline
+<p align="center">
+    <img src="src/assets/underline.png"
+    width = 300px
+    >
+</p>
 - Strikeout
+<p align="center">
+    <img src="src/assets/strike.png"
+    width = 300px
+    >
+</p>
 - Square
+<p align="center">
+    <img src="src/assets/square.png"
+    width = 300px
+    >
+</p>
 - Oval
+<p align="center">
+    <img src="src/assets/oval.png"
+    width = 300px
+    >
+</p>
 - and more
 
 ### Parameters Required
@@ -158,116 +160,6 @@ Each annotation type requires at least the following parameters:
 for details and the rest of the documentation, I urge you to read their entire documentation at [pdfAnnotate](https://github.com/highkite/pdfAnnotate).
 
 * Note: one thing you need to be cautious is that pdfjs origin for a "rect" is top left, and pdfAnnotate origin is buttom left, so you need a simple conversion of "y" coordinates to create the list of your annotations.
-
-
-### Script Setup
-
-```javascript
-<script setup>
-import { ref } from 'vue';
-import { piniaStore } from '../stores/piniaStore';
-import { storeToRefs } from 'pinia';
-import { AnnotationFactory } from 'annotpdf';
-
-const pdfStore = piniaStore();
-const { pdfUrl } = storeToRefs(pdfStore);
-
-const annotationType = ref('highlight');
-const annotationColor = ref({ r: 255, g: 255, b: 0 });
-
-const setAnnotationType = (type, color) => {
-  annotationType.value = type;
-  annotationColor.value = color;
-  triggerHighlightAnnotations();
-};
-
-const triggerHighlightAnnotations = async () => {
-  const pdfViewerIframe = document.getElementById('pdfViewer');
-  const viewerApp = pdfViewerIframe.contentWindow.PDFViewerApplication;
-  if (viewerApp && viewerApp.pdfDocument) {
-    const data = await viewerApp.pdfDocument.getData();
-    const pdfFactory = new AnnotationFactory(data);
-    await highlightAnnotation(viewerApp, pdfFactory);
-  }
-};
-
-const triggerDeleteAnnotations = async () => {
-  const pdfViewerIframe = document.getElementById('pdfViewer');
-  const viewerApp = pdfViewerIframe.contentWindow.PDFViewerApplication;
-  if (viewerApp && viewerApp.pdfDocument) {
-    const data = await viewerApp.pdfDocument.getData();
-    const pdfFactory = new AnnotationFactory(data);
-    await deleteAnnotations(viewerApp, pdfFactory);
-  }
-};
-
-const highlightAnnotation = async (viewerApp, pdfFactory) => {
-  await deleteExistingAnnotations(viewerApp, pdfFactory);
-  const annotations = [];
-  const page = 0;
-  const contents = 'Trace-based Just-in-Time Type Specialization for Dynamic';
-  const author = 'Auto Generated';
-  const rect = [
-    530, // x1
-    792 - 94.99, // y1
-    80.56, // x2
-    792 - 77.06 // y2
-  ];
-  annotations.push({
-    page,
-    rect,
-    contents,
-    author,
-    color: annotationColor.value,
-    opacity: 0.7,
-  });
-
-  annotations.forEach(annotation => {
-    if (annotationType.value === 'highlight') {
-      pdfFactory.createHighlightAnnotation(annotation);
-    } else if (annotationType.value === 'squiggly') {
-      pdfFactory.createSquigglyAnnotation(annotation);
-    } else if (annotationType.value === 'underline') {
-      pdfFactory.createUnderlineAnnotation(annotation);
-    } else if (annotationType.value === 'strike') {
-      pdfFactory.createStrikeOutAnnotation(annotation);
-    } else if (annotationType.value === 'square') {
-      pdfFactory.createSquareAnnotation(annotation);
-    } else if (annotationType.value === 'oval') {
-      pdfFactory.createCircleAnnotation(annotation);
-    }
-  });
-
-  const updatedPdfData = pdfFactory.write();
-  viewerApp.open({ data: updatedPdfData });
-  console.log('Added new annotations');
-};
-
-const deleteAnnotations = async (viewerApp, pdfFactory) => {
-  await deleteExistingAnnotations(viewerApp, pdfFactory);
-};
-
-const deleteExistingAnnotations = async (viewerApp, pdfFactory) => {
-  const existingAnnotations = await pdfFactory.getAnnotations();
-  const flattenedAnnotations = existingAnnotations.flat();
-  if (flattenedAnnotations.length > 0) {
-    const annotationIdsToDelete = flattenedAnnotations.map(annot => annot.id);
-    const deletePromises = annotationIdsToDelete.map(annotationId => pdfFactory.deleteAnnotation(annotationId));
-
-    // Delete all existing annotations
-    await Promise.all(deletePromises);
-    console.log('Deleted existing annotations');
-    const updatedPdfData = pdfFactory.write();
-    await viewerApp.open({ data: updatedPdfData });
-  }
-};
-</script>
-```
-
-By integrating `pdfAnnotate`, you can easily add programmatic annotations to your PDF documents. This library supports various annotation types, making it flexible and powerful for different use cases.
-
----
-
 
 
 Thank you for using the PDF Annotator project! We hope this guide helps you get the most out of your PDF viewing and annotation capabilities. Happy coding!

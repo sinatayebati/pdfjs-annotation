@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from "node:url";
+import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import svgLoader from 'vite-svg-loader'
@@ -10,27 +10,27 @@ export default defineConfig({
     vuetify({
       autoImport: true,
     }),
-    svgLoader()
+    svgLoader(),
   ],
-  define: { "process.env": {} },
+  define: { 'process.env': {} },
   resolve: {
-      alias: {
-          "@": fileURLToPath(new URL("./src", import.meta.url)),
-      },
-      extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
-  base: "/pdfjs-annotation/",
+  base: '/pdfjs-annotation/',
   server: {
     host: '0.0.0.0',
-    port: 5173
+    port: 5173,
   },
   optimizeDeps: {
     esbuildOptions: {
-      target: 'esnext'
-    }
+      target: 'esnext',
+    },
   },
   build: {
-      outDir: 'dist',
-      target: 'esnext'
+    outDir: 'dist',
+    target: 'esnext',
   },
 })

@@ -11,10 +11,10 @@ import { storeToRefs } from 'pinia';
 import { AnnotationFactory } from 'annotpdf';
 
 const pdfViewerIframe = ref(null);
-const viewerUrl = ref('/pdfjs-annotation/pdfjs-4.2.67-dist/web/viewer.html');
+//const viewerUrl = ref('./pdfjs-4.2.67-dist/web/viewer.html');
 
 const pdfStore = piniaStore();
-const { pdfUrl } = storeToRefs(pdfStore);
+const { pdfUrl, viewerUrl } = storeToRefs(pdfStore);
 const pdfPageDimensions = ref([]);
 
 // Call the function to load the PDF when the component is mounted
